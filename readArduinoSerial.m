@@ -56,6 +56,7 @@ function [tabla, Ts] = readArduinoSerial(Tiempo_Total)
 
        j = j + 1;               % Contador del valor actual
        cronometro = toc;
+       clear value;
        
     end
     
