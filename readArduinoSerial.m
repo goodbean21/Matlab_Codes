@@ -1,5 +1,7 @@
 function [tabla, Ts] = readArduinoSerial(Tiempo_Total)
 %%  
+    close all
+    
     path1 = 'C:\Users\Usuario\Desktop\10mo Semestre\Cardiovascular\Proyecto_MockLoop\Versión_1\Matlab_Codes\Caracterización_MockLoop';
     archive = strcat(path1,'\Caracterización_v1.csv');
     
@@ -13,7 +15,7 @@ function [tabla, Ts] = readArduinoSerial(Tiempo_Total)
     j = 1;
     i = 1;
     data = [];
-    ard = serial('COM9', 'BaudRate', 9600); % create serial communication object
+    ard = serial('COM10', 'BaudRate', 9600); % create serial communication object
     fopen(ard);                           % initiate arduino communication
     pause(3);                             % Importante esperar a la conexion! 
     
@@ -53,9 +55,12 @@ function [tabla, Ts] = readArduinoSerial(Tiempo_Total)
            break
 
        end
+       
 
+       
        j = j + 1;               % Contador del valor actual
        cronometro = toc;
+       
        clear value;
        
     end
@@ -66,15 +71,24 @@ function [tabla, Ts] = readArduinoSerial(Tiempo_Total)
     t = (0 : Ts : cronometro).';
     data = data.';
     
-    tabla = horzcat(t(1:end-1), data);
+    t = t(1:end-1);
+    length(t)
+    length(data)
+    
+    figure,
+    plot(t, data);
+    xlabel('Tiempo (s)')
+    ylabel('Flow (L/min)')
+    
+    tabla = horzcat(t, data);
     
     while exist(archive)
         i = i + 1;
         archive = strcat(path1, '\Caracterización_v', int2str(i), '.csv');
 
     end
-
+    
     csvwrite(archive, table, 0, 0);
-
+    save(strcat(path1, '\Caracterización_v', int2str(i), '.mat'), 'tabla')
     
 end
