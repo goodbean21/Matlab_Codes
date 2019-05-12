@@ -1,4 +1,4 @@
-function [tabla, Ts] = readArduinoSerial(Tiempo_Total)
+function [tabla, Ts] = readArduinoSerial(puerto, Tiempo_Total)
 %%  
     close all
     
@@ -15,8 +15,10 @@ function [tabla, Ts] = readArduinoSerial(Tiempo_Total)
     j = 1;
     i = 1;
     data = [];
-    ard = serial('COM10', 'BaudRate', 9600); % create serial communication object
+    ard = serial(puerto, 'BaudRate', 9600); % create serial communication object
+    
     fopen(ard);                           % initiate arduino communication
+    
     pause(3);                             % Importante esperar a la conexion! 
     
     fprintf(ard, '%c', 'm');
@@ -35,6 +37,8 @@ function [tabla, Ts] = readArduinoSerial(Tiempo_Total)
     end
     
     tic;
+    disp('Comenzando muestra');
+    
     while cronometro < Tiempo_Total
        value = fscanf(ard,'%f'); % Se guarda un dato que reciba por terminal
         
@@ -68,19 +72,18 @@ function [tabla, Ts] = readArduinoSerial(Tiempo_Total)
     fclose(ard);                % Se termina la comunicación con arduino
     
     Ts = (cronometro/(j-1));
-    t = (0 : Ts : cronometro).';
-    data = data.';
+    t = (0 : Ts : cronometro);
     
     t = t(1:end-1);
-    length(t)
-    length(data)
     
     figure,
     plot(t, data);
     xlabel('Tiempo (s)')
     ylabel('Flow (L/min)')
     
-    tabla = horzcat(t, data);
+    tabla = horzcat(t.', data.');
+    
+    promedio = mean(data)
     
     while exist(archive)
         i = i + 1;
@@ -88,7 +91,7 @@ function [tabla, Ts] = readArduinoSerial(Tiempo_Total)
 
     end
     
-    csvwrite(archive, table, 0, 0);
     save(strcat(path1, '\Caracterización_v', int2str(i), '.mat'), 'tabla')
+    csvwrite(archive, tabla, 0, 0);
     
 end
