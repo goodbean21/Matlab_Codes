@@ -1,5 +1,5 @@
 function master(numero_De_Caracterizacion, pressureHigh, Ts)
-    path1 = 'C:\Users\Usuario\Desktop\10mo Semestre\Cardiovascular\Proyecto_MockLoop\Versión_1\Matlab_Codes\Caracterización_MockLoop';
+    path1 = 'C:\Users\Usuario\Desktop\10mo Semestre\Cardiovascular\Proyecto_MockLoop\Versión_1\Matlab_Codes\';
     tabla = load(strcat(path1, '\Caracterización_v', int2str(numero_De_Caracterizacion), '.mat'));
     
     flow = tabla(2,:);
